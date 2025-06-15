@@ -1,0 +1,129 @@
+class Book:
+    """
+    Represents a book in the library with its title, author, and availability status.
+    """
+    def __init__(self, title, author):
+        """
+        Initializes a new Book instance.
+
+        Args:
+            title (str): The title of the book.
+            author (str): The author of the book.
+        """
+        self.title = title       # Public attribute
+        self.author = author     # Public attribute
+        self._is_checked_out = False # Private attribute (convention using single underscore)
+
+    def check_out(self):
+        """
+        Marks the book as checked out if it's currently available.
+
+        Returns:
+            bool: True if the book was successfully checked out, False otherwise (already checked out).
+        """
+        if not self._is_checked_out:
+            self._is_checked_out = True
+            return True
+        return False
+
+    def return_book(self):
+        """
+        Marks the book as returned if it's currently checked out.
+
+        Returns:
+            bool: True if the book was successfully returned, False otherwise (not checked out).
+        """
+        if self._is_checked_out:
+            self._is_checked_out = False
+            return True
+        return False
+
+    def is_available(self):
+        """
+        Checks if the book is currently available.
+
+        Returns:
+            bool: True if available, False otherwise.
+        """
+        return not self._is_checked_out
+
+    def __str__(self):
+        """
+        Returns a user-friendly string representation of the Book object.
+        """
+        return f"{self.title} by {self.author}"
+
+
+class Library:
+    """
+    Manages a collection of Book instances, providing operations to add,
+    check out, return, and list available books.
+    """
+    def __init__(self):
+        """
+        Initializes a new Library instance with an empty list to store books.
+        """
+        self._books = [] # Private list to store Book instances (convention using single underscore)
+
+    def add_book(self, book):
+        """
+        Adds a Book instance to the library's collection.
+
+        Args:
+            book (Book): The Book object to add.
+        """
+        if not isinstance(book, Book):
+            print("Error: Only Book objects can be added to the library.")
+            return
+        self._books.append(book)
+        # print(f"'{book.title}' added to the library.") # Optional: for debugging
+
+    def check_out_book(self, title):
+        """
+        Attempts to check out a book by its title.
+
+        Args:
+            title (str): The title of the book to check out.
+        """
+        book_found = False
+        for book in self._books:
+            if book.title == title:
+                book_found = True
+                if book.check_out(): # Call the book's method to change its state
+                    print(f"Checked out '{title}'.")
+                else:
+                    print(f"'{title}' is already checked out.")
+                return # Exit once the book is found and handled
+        if not book_found:
+            print(f"'{title}' not found in the library.")
+
+    def return_book(self, title):
+        """
+        Attempts to return a book by its title.
+
+        Args:
+            title (str): The title of the book to return.
+        """
+        book_found = False
+        for book in self._books:
+            if book.title == title:
+                book_found = True
+                if book.return_book(): # Call the book's method to change its state
+                    print(f"Returned '{title}'.")
+                else:
+                    print(f"'{title}' was not checked out.")
+                return # Exit once the book is found and handled
+        if not book_found:
+            print(f"'{title}' not found in the library.")
+
+    def list_available_books(self):
+        """
+        Prints the titles and authors of all books currently available in the library.
+        """
+        available_count = 0
+        for book in self._books:
+            if book.is_available():
+                print(book) # Uses the __str__ method of the Book class
+                available_count += 1
+        if available_count == 0:
+            print("No books available.")

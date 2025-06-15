@@ -1,0 +1,58 @@
+class BankAccount:
+    """
+    A class to represent a bank account, encapsulating banking operations.
+    """
+
+    def __init__(self, initial_balance=0.0):
+        """
+        Initializes a new BankAccount instance.
+
+        Args:
+            initial_balance (float): The starting balance for the account. Defaults to 0.0.
+        """
+        # Ensure initial_balance is a non-negative number
+        if not isinstance(initial_balance, (int, float)) or initial_balance < 0:
+            raise ValueError("Initial balance must be a non-negative number.")
+        # Using a single underscore for 'protected' encapsulation by convention,
+        # or double underscore for name mangling (stronger encapsulation, though less common for simple attributes).
+        # The prompt implies a balance attribute that holds the value directly.
+        self._account_balance = float(initial_balance)
+
+    def deposit(self, amount):
+        """
+        Deposits the specified amount to the account balance.
+
+        Args:
+            amount (float): The amount to deposit.
+        """
+        if not isinstance(amount, (int, float)) or amount <= 0:
+            print("Deposit amount must be a positive number.")
+            return
+        self._account_balance += amount
+
+    def withdraw(self, amount):
+        """
+        Deducts the amount from account_balance if funds are sufficient.
+
+        Args:
+            amount (float): The amount to withdraw.
+
+        Returns:
+            bool: True if funds are sufficient and withdrawal is successful, False otherwise.
+        """
+        if not isinstance(amount, (int, float)) or amount <= 0:
+            print("Withdrawal amount must be a positive number.")
+            return False
+
+        if self._account_balance >= amount:
+            self._account_balance -= amount
+            return True
+        else:
+            return False
+
+    def display_balance(self):
+        """
+        Prints the current balance in a user-friendly format.
+        """
+        # Using string formatting to ensure consistent decimal places for currency
+        print(f"Current Balance: ${self._account_balance:.2f}")

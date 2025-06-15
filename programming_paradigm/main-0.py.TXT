@@ -1,0 +1,58 @@
+import sys
+from bank_account import BankAccount
+
+def main():
+    """
+    Main function to interact with BankAccount via command line arguments.
+    """
+    # Initialize BankAccount with an example starting balance
+    # The instructions specify an example of 100 for testing.
+    account = BankAccount(100.00)
+
+    # Check if enough arguments are provided
+    if len(sys.argv) < 2:
+        print("Usage: python main-0.py <command>[:<amount>]")
+        print("Commands: deposit, withdraw, display")
+        sys.exit(1)
+
+    # Parse the command and optional amount from the first argument
+    # Example: sys.argv[1] could be "deposit:50" or "display"
+    command_parts = sys.argv[1].split(':')
+    command = command_parts[0].lower() # Convert command to lowercase for case-insensitivity
+
+    amount = None
+    if len(command_parts) > 1:
+        try:
+            amount = float(command_parts[1])
+        except ValueError:
+            print(f"Error: Amount '{command_parts[1]}' must be a valid number.")
+            sys.exit(1)
+
+    # Execute the appropriate bank account method based on the command
+    if command == "deposit":
+        if amount is not None:
+            account.deposit(amount)
+            # Only print success message if deposit was valid.
+            # The deposit method already handles invalid amounts by printing an internal message.
+            if isinstance(amount, (int, float)) and amount > 0:
+                print(f"Deposited: ${amount:.2f}")
+        else:
+            print("Usage: python main-0.py deposit:<amount>")
+            sys.exit(1)
+    elif command == "withdraw":
+        if amount is not None:
+            if account.withdraw(amount):
+                print(f"Withdrew: ${amount:.2f}")
+            else:
+                print("Insufficient funds.")
+        else:
+            print("Usage: python main-0.py withdraw:<amount>")
+            sys.exit(1)
+    elif command == "display":
+        account.display_balance()
+    else:
+        print(f"Invalid command: '{command}'. Commands are: deposit, withdraw, display.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
